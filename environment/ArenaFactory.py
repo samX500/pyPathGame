@@ -6,13 +6,13 @@ from environment.element.object.Wall import Wall
 from util.Direction import Direction
 
 
-class Arena_factory():
+class ArenaFactory():
     WALL_PROPORTION = 0.2
 
     @staticmethod
     def build_random_arena(width: int, height: int):
         arena = Arena(width, height)
-        number_of_wall = width * height * Arena_factory.WALL_PROPORTION
+        number_of_wall = width * height * ArenaFactory.WALL_PROPORTION
 
         current_wall = 0
 
@@ -23,7 +23,7 @@ class Arena_factory():
             min_size = min(width, height)
             length = randint(1, int(min_size / 2))
 
-            walls = Arena_factory.build_wall(position, length, direction, arena)
+            walls = ArenaFactory.build_wall(position, length, direction, arena)
             arena.add_elements(*walls)
 
             current_wall += len(walls)

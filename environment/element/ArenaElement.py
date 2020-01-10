@@ -1,4 +1,4 @@
-class Arena_element():
+class ArenaElement():
 
     def __init__(self, x_pos: int, y_pos: int):
         self.__position = x_pos, y_pos
