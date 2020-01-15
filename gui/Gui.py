@@ -1,4 +1,3 @@
-import os
 import pickle
 
 import pyglet
@@ -6,13 +5,11 @@ from pyglet.window import key
 
 from environment.Arena import Arena
 from environment.element.Element import Element
-from environment.element.object.Beginning import Beginning
 from environment.element.object.EmptySpace import EmptySpace
-from environment.element.object.End import End
 from environment.element.object.Wall import Wall
 from gui.ElementColor import ElementColor
 from gui.MazeDrawer import MazeDrawer
-from pathFinder.PathFinder import PathFinder
+from pathFinder.PersonalPathFinder import PersonalPathFinder
 
 
 class Gui(pyglet.window.Window):
@@ -34,6 +31,8 @@ class Gui(pyglet.window.Window):
         self.__drawer = MazeDrawer(self.__get_element_color(), self.TILE_SIZE, self.BOARD_SIZE, self.WINDOW_SIZE,
                                    self.ELEMENT_CHAR_SIZE)
         self.__current_element = Element.WALL
+        self.__beginning = None
+        self.__end = None
         self.__path = None
 
     def __get_element_color(self):
@@ -50,14 +49,23 @@ class Gui(pyglet.window.Window):
         self.clear()
         self.__drawer.draw_current_element(self.__current_element)
         self.__drawer.draw_arena(self.__arena)
+        if self.__path is not None:
+            self.__drawer.draw_path(self.__path)
+
+        if self.__beginning is not None:
+            self.__drawer.draw_beginning(self.__beginning)
+        if self.__end is not None:
+            self.__drawer.draw__ending(self.__end)
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
         x, y = self.__drawer.get_mouse_position(x, y)
         if self.__arena.is_in_bound(x, y) and isinstance(self.__arena.get_element_at(x, y), EmptySpace):
             if self.__current_element == Element.BEGINNING:
-                self.__arena.add_elements((Beginning(x, y)))
+                self.__beginning = x, y
+                self.__path = None
             elif self.__current_element == Element.END:
-                self.__arena.add_elements((End(x, y)))
+                self.__end = x, y
+                self.__path = None
 
     def on_mouse_drag(self, x: int, y: int, dx: int, dy: int, buttons: int, modifiers: int):
         x, y = self.__drawer.get_mouse_position(x - dx, y - dy)
@@ -80,10 +88,11 @@ class Gui(pyglet.window.Window):
         elif symbol == key.S:
             self.save_current_arena()
         elif symbol == key.P:
-            self.__path = PathFinder.find_path(self.__arena,self.__arena.get_beginning(),self.__arena.get_end(),[])
+            path_finder = PersonalPathFinder(self.__arena)
+            self.__path = path_finder.find_path(self.__beginning, self.__end, [])
 
     def save_current_arena(self):
-        with open('./savedArena/test','wb') as file:
+        with open('./savedArena/test', 'wb') as file:
             pickle.dump(self.__arena, file)
 
 
