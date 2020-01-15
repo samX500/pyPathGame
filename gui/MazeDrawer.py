@@ -1,7 +1,10 @@
+import pyglet
 import pyglet.gl as gl
 
 from environment.Arena import Arena
-from environment.element import ArenaElement
+from environment.element import ArenaElement, Element
+from environment.element.object.Beginning import Beginning
+from environment.element.object.End import End
 from environment.element.object.EmptySpace import EmptySpace
 from environment.element.object.Wall import Wall
 from gui.ElementColor import ElementColor
@@ -9,15 +12,25 @@ from gui.ElementColor import ElementColor
 
 class MazeDrawer():
 
-    def __init__(self, colors: ElementColor, tile_size: int, board_dim: (int, int), window_dim: (int, int)):
+    def __init__(self, colors: ElementColor, tile_size: int, board_dim: (int, int), window_dim: (int, int),element_char_size:int):
         self.__colors = colors
         self.__tile_size = tile_size
         self.__board_width, self.__board_height = board_dim
         self.__window_width, self.__window_height = window_dim
+        self.__element_char_size = element_char_size
 
         self.__transform = self.__window_width / 2 - self.__board_width / 2 * self.__tile_size, \
-                           self.__window_width / 2 - self.__board_width / 2 * self.__tile_size, \
+                           self.__window_height / 2 - self.__board_height / 2 * self.__tile_size, \
                            0
+
+    def get_mouse_position(self, x: int, y: int):
+        x, y = x - self.__transform[0], y - self.__transform[1]
+        return int(x // self.__tile_size), int(y // self.__tile_size)
+
+    def draw_current_element(self, element:Element):
+        gl.glPushMatrix()
+        self.__draw_label(self.__colors.get_element_char_color(),element.value,self.__element_char_size)
+        gl.glPopMatrix()
 
     def draw_arena(self, arena: Arena):
         gl.glPushMatrix()
@@ -38,12 +51,25 @@ class MazeDrawer():
 
         gl.glPopMatrix()
 
+    def draw_path(self,path:[(int,int)]):
+        gl.glPushMatrix()
+        gl.glTranslatef(*self.__transform)
+        for pos in path:
+            gl.glTranslatef(*pos)
+            self.__draw_tile(self.__colors.get_path_color(),self.__tile_size)
+            gl.glPopMatrix()
+        gl.glPopMatrix()
+
     def get_color(self, element: ArenaElement):
 
         if isinstance(element, Wall):
             return self.__colors.get_wall_color()
         elif isinstance(element, EmptySpace):
             return self.__colors.get_empty_color()
+        elif isinstance(element,Beginning):
+            return self.__colors.get_beginning_color()
+        elif isinstance(element,End):
+            return self.__colors.get_ending_color()
 
     def __draw_tile(self, color: (int, int, int, int), dimension: int):
         gl.glColor4f(*color)
@@ -54,3 +80,7 @@ class MazeDrawer():
         gl.glVertex2d(dimension, dimension)
         gl.glVertex2d(dimension, 0)
         gl.glEnd()
+
+    def __draw_label(self,color:(int,int,int,int),text:str,font_size:int):
+        label = pyglet.text.Label(text,color=color,font_size=font_size)
+        label.draw()

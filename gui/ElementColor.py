@@ -3,7 +3,10 @@ class ElementColor():
     def __init__(self):
         self.__wall_color = None
         self.__empty_color = None
-        self.__player_color = None
+        self.__path_color = None
+        self.__beginning_color = None
+        self.__ending_color = None
+        self.__element_char_color = None
 
     def get_wall_color(self):
         return self.__wall_color
@@ -17,8 +20,26 @@ class ElementColor():
     def set_empty_color(self, color: (int, int, int, int)):
         self.__empty_color = color
 
-    def get_player_color(self):
-        return self.__player_color
+    def get_element_char_color(self):
+        return self.__element_char_color
 
-    def set_player_color(self, color: (int, int, int, int)):
-        self.__player_color = color
+    def set_element_char_color(self, color: (int, int, int, int)):
+        self.__element_char_color = color
+
+    def get_ending_color(self):
+        return self.__ending_color
+
+    def set_ending_color(self, color: (int, int, int, int)):
+        self.__ending_color = color
+
+    def get_beginning_color(self):
+        return self.__beginning_color
+
+    def set_beginning_color(self, color: (int, int, int, int)):
+        self.__beginning_color = color
+
+    def get_path_color(self):
+        return self.__path_color
+
+    def set_path_color(self, color: (int, int, int, int)):
+        self.__path_color = color
