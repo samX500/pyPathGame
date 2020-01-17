@@ -88,8 +88,11 @@ class Gui(pyglet.window.Window):
         elif symbol == key.S:
             self.save_current_arena()
         elif symbol == key.P:
-            path_finder = PersonalPathFinder(self.__arena)
-            self.__path = path_finder.find_path(self.__beginning, self.__end, [])
+            if self.__path is None:
+                path_finder = PersonalPathFinder(self.__arena)
+                self.__path = path_finder.find_path(self.__beginning, self.__end, [],[])
+            else:
+                self.__path = None
 
     def save_current_arena(self):
         with open('./savedArena/test', 'wb') as file:
