@@ -9,7 +9,7 @@ from environment.element.object.EmptySpace import EmptySpace
 from environment.element.object.Wall import Wall
 from gui.ElementColor import ElementColor
 from gui.MazeDrawer import MazeDrawer
-from pathFinder.PersonalPathFinder import PersonalPathFinder
+from pathFinder.AStar import AStar
 
 
 class Gui(pyglet.window.Window):
@@ -89,8 +89,8 @@ class Gui(pyglet.window.Window):
             self.save_current_arena()
         elif symbol == key.P:
             if self.__path is None:
-                path_finder = PersonalPathFinder(self.__arena)
-                self.__path = path_finder.find_path(self.__beginning, self.__end, [],[])
+                path_finder = AStar(self.__arena)
+                self.__path = path_finder.find_path(self.__beginning, self.__end)
             else:
                 self.__path = None
 

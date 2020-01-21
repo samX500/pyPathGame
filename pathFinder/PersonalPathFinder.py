@@ -11,9 +11,11 @@ class PersonalPathFinder(PathFinder):
     def __init__(self, arena: Arena):
         super(PersonalPathFinder, self).__init__(arena)
 
-    def find_path(self, beginning: (int, int), end: (int, int), current_path: [(int, int)], dead_end: [(int, int)]):
-        print(current_path)
+    def find_path(self, beginning: (int, int), end: (int, int)):
+        return  self.__get_path(beginning,end,[],[])
 
+
+    def __get_path(self,beginning: (int, int), end: (int, int), current_path: [(int, int)], dead_end: [(int, int)]):
         if beginning == end:
             return current_path
 
@@ -22,7 +24,7 @@ class PersonalPathFinder(PathFinder):
             if PersonalPathFinder.__is_closer(beginning, movement, end):
                 if not isinstance(self.arena.get_element_at(*movement), Wall) and movement not in dead_end:
                     current_path.append(beginning)
-                    return self.find_path(movement, end, current_path, dead_end)
+                    return self.__get_path(movement, end, current_path, dead_end)
                 else:
                     for new_direction in Direction:
                         if new_direction != direction:
@@ -33,11 +35,11 @@ class PersonalPathFinder(PathFinder):
                                     new_movement not in dead_end:
 
                                 current_path.append(beginning)
-                                return self.find_path(new_movement, end, current_path, dead_end)
+                                return self.__get_path(new_movement, end, current_path, dead_end)
                             else:
                                 dead_end.append(beginning)
                                 beginning = current_path.pop()
-                                return self.find_path(beginning, end, current_path, dead_end)
+                                return self.__get_path(beginning, end, current_path, dead_end)
 
     @staticmethod
     def __is_closer(current_pos: (int, int), new_pos: (int, int), end_pos: (int, int)):

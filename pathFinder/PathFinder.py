@@ -7,5 +7,5 @@ class PathFinder():
         #Ask will about private stuff with inheritence
         self.arena = arena
 
-    def find_path(self, begining: (int, int), end: (int, int), current_path: [(int, int)],dead_end:[(int,int)]):
+    def find_path(self, begining: (int, int), end: (int, int)):
         pass
